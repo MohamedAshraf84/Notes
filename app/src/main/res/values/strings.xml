@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Notes</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="notes_fragment_label">Notes</string>
+    <string name="Tasks_fragment_label">Tasks</string>
+
+    <string name="edit_note_label">Edit Note</string>
+    <string name="note_title_hint">Title</string>
+    <string name="note_details_hint">Start typing</string>
+</resources>

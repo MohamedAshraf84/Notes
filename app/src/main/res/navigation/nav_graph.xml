@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/NotesFragment">
+
+    <fragment
+        android:id="@+id/NotesFragment"
+        android:name="com.mohamedashraf.notes.ui.fragments.noteslist.NotesFragment"
+        android:label="@string/notes_fragment_label"
+        tools:layout="@layout/fragment_notes_list">
+
+        <action
+            android:id="@+id/action_NotesList_to_EditNote"
+            app:destination="@id/EditNoteFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/TasksFragment"
+        android:name="com.mohamedashraf.notes.ui.fragments.taskslist.TasksFragment"
+        android:label="@string/Tasks_fragment_label"
+        tools:layout="@layout/fragment_tasks">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/EditNoteFragment"
+        android:name="com.mohamedashraf.notes.ui.fragments.editnote.EditNoteFragment"
+        android:label="@string/edit_note_label"
+        tools:layout="@layout/fragment_edit_note" />
+</navigation>

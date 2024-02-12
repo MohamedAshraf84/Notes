@@ -1,0 +1,6 @@
+<resources>
+    <dimen name="fab_margin">32dp</dimen>
+    <dimen name="guideline_horizontal_top_constraint">40dp</dimen>
+    <dimen name="guideline_horizontal_bottom_constraint">16dp</dimen>
+    <dimen name="guideline_vertical_constraint">8dp</dimen>
+</resources>
