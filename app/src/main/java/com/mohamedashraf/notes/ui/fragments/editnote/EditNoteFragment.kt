@@ -2,25 +2,42 @@ package com.mohamedashraf.notes.ui.fragments.editnote
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.mohamedashraf.notes.NoteViewModel
+import com.mohamedashraf.notes.NotesApplication
+import com.mohamedashraf.notes.R
+import com.mohamedashraf.notes.database.NoteEntity
+import com.mohamedashraf.notes.database.NotesDatabase
+import com.mohamedashraf.notes.database.NotesDatabaseDao
 import com.mohamedashraf.notes.databinding.FragmentEditNoteBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.log
 
 
 class EditNoteFragment : Fragment() {
 
+    private val args by navArgs<EditNoteFragmentArgs>()
     private lateinit var editNoteViewModel  : EditNoteViewModel
+    private lateinit var noteViewModel  : NoteViewModel
     private var         _binding            : FragmentEditNoteBinding? = null
     private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,6 +51,21 @@ class EditNoteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         editNoteViewModel = ViewModelProvider(requireActivity())[EditNoteViewModel::class.java]
+        noteViewModel = ViewModelProvider(requireActivity())[NoteViewModel::class.java]
+
+
+        if (args.note != null) // existing note
+        {
+            binding.edNoteTitle.editText?.setText(args.note?.noteTitle)
+            binding.edNoteDetails.editText?.setText(args.note?.noteBody)
+            binding.tvDate.text = args.note?.creationDate
+            binding.tvTime.text = args.note?.creationTime
+        }
+        else // new note
+        {
+            binding.tvDate.text = getCurrentDate()
+            binding.tvTime.text = getCurrentTime()
+        }
 
         binding.edNoteTitle.editText?.addTextChangedListener {
             editNoteViewModel.updateNoteTitle(it.toString())
@@ -56,20 +88,32 @@ class EditNoteFragment : Fragment() {
 
         editNoteViewModel.getCharsCounter().observe(viewLifecycleOwner)
         {
-            binding.tvCharsCounter.text = "${it.toString()} Characters"
+            binding.tvCharsCounter.text = "$it ${getString(R.string.characters)}"
             //Toast.makeText(requireContext(), "Chars Changed", Toast.LENGTH_SHORT).show()
         }
 
+
         binding.btAddFinish.setOnClickListener{
 
-            findNavController().navigateUp()
+            val note = NoteEntity(
+                noteTitle = binding.edNoteTitle.editText?.text.toString(),
+                noteBody = binding.edNoteDetails.editText?.text.toString(),
+                creationDate = binding.tvDate.text.toString(),
+                creationTime = binding.tvTime.text.toString()
+            )
+
+            if (args.note == null)
+            {
+                noteViewModel.addNoteToDataBase(note)
+            }else{
+                note.noteId = args.note?.noteId!!
+                noteViewModel.updateNote(note)
+            }
+
+            findNavController().navigate(R.id.action_EditNoteFragment_to_NotesFragment)
         }
     }
 
-
-    override fun onStart() {
-        super.onStart()
-    }
 
     private fun getCurrentDate() : String
     {

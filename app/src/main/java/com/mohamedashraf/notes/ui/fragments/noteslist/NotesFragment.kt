@@ -1,15 +1,27 @@
 package com.mohamedashraf.notes.ui.fragments.noteslist
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mohamedashraf.notes.NoteViewModel
+import com.mohamedashraf.notes.NotesApplication
+import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
+import com.mohamedashraf.notes.database.NotesDatabase
+import com.mohamedashraf.notes.database.NotesDatabaseDao
 import com.mohamedashraf.notes.databinding.FragmentNotesListBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -18,8 +30,8 @@ class NotesFragment : Fragment() {
 
     private var _binding: FragmentNotesListBinding? = null
     private lateinit var notesRecyclerView: RecyclerView
-    private var notesAdapter: NotesRecyclerAdapter? = null
-    private lateinit var notesViewModel: NotesFragmentViewModel
+    private lateinit var notesAdapter: NotesRecyclerAdapter
+    private lateinit var notesViewModel: NoteViewModel
     private lateinit var layoutManager: GridLayoutManager
 
     private val binding get() = _binding!!
@@ -36,18 +48,14 @@ class NotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        notesViewModel = ViewModelProvider(this) [NotesFragmentViewModel::class.java]
         notesRecyclerView = binding.recyclerView
+        notesViewModel = ViewModelProvider(this) [NoteViewModel::class.java]
 
         setupRecyclerView()
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
+        notesViewModel.allNotes.observe(viewLifecycleOwner)
+        {
+            notesAdapter.setData(it)
+        }
     }
 
     private fun setupRecyclerView()
@@ -55,7 +63,7 @@ class NotesFragment : Fragment() {
         layoutManager = GridLayoutManager(context,1)
         layoutManager.orientation = RecyclerView.VERTICAL
         notesRecyclerView.layoutManager = layoutManager
-        notesAdapter = NotesRecyclerAdapter(requireContext() , setSampleData())
+        notesAdapter = NotesRecyclerAdapter(requireContext() /*, setSampleData()*/)
         notesRecyclerView.adapter = notesAdapter
     }
 

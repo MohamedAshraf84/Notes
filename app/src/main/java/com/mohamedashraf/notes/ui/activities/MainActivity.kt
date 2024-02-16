@@ -1,4 +1,4 @@
-package com.mohamedashraf.notes.activities
+package com.mohamedashraf.notes.ui.activities
 
 import android.opengl.Visibility
 import android.os.Bundle
@@ -34,8 +34,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.btnAddNote.setOnClickListener {
-            navController.navigate(R.id.action_NotesList_to_EditNote)
             setAddNodeBtnVisible(false)
+            navController.navigate(R.id.action_NotesList_to_EditNote)
         }
     }
 

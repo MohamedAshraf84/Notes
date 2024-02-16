@@ -25,15 +25,4 @@ import java.util.Locale
 
 class NotesFragmentViewModel : ViewModel() {
 
-
-    private var noteDao: NotesDatabaseDao? = null
-
-    init {
-        noteDao = NotesDatabase.getNotesDaoInstance(NotesApplication.getApplicationContext())
-    }
-
-    fun getAllNotes(): List<NoteEntity> {
-
-        return arrayListOf()
-    }
 }

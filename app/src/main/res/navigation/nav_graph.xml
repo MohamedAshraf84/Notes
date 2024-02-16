@@ -14,6 +14,7 @@
         <action
             android:id="@+id/action_NotesList_to_EditNote"
             app:destination="@id/EditNoteFragment" />
+
     </fragment>
 
     <fragment
@@ -28,5 +29,15 @@
         android:id="@+id/EditNoteFragment"
         android:name="com.mohamedashraf.notes.ui.fragments.editnote.EditNoteFragment"
         android:label="@string/edit_note_label"
-        tools:layout="@layout/fragment_edit_note" />
+        tools:layout="@layout/fragment_edit_note" >
+        <action
+            android:id="@+id/action_EditNoteFragment_to_NotesFragment"
+            app:destination="@id/NotesFragment" />
+        <argument
+            android:name="note"
+            app:argType="com.mohamedashraf.notes.database.NoteEntity"
+            app:nullable="true"
+            android:defaultValue="@null" />
+
+    </fragment>
 </navigation>

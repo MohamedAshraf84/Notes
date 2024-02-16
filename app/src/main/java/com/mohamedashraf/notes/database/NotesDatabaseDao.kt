@@ -21,5 +21,12 @@ interface NotesDatabaseDao {
     suspend fun update(note: NoteEntity)
 
     @Query("SELECT * FROM note_entity")
-    suspend fun getAllNotes() : List<NoteEntity>
+    fun getAllNotes() : LiveData<List<NoteEntity>>
+
+    @Query("SELECT * FROM note_entity")
+    suspend fun readAll() : List<NoteEntity>
+
+    @Query("SELECT * FROM note_entity WHERE note_id = :noteId")
+    suspend fun getNoteById(noteId: Long): NoteEntity?
+
 }

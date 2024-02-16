@@ -9,4 +9,5 @@
     <string name="edit_note_label">Edit Note</string>
     <string name="note_title_hint">Title</string>
     <string name="note_details_hint">Start typing</string>
+    <string name="characters">Characters</string>
 </resources>
