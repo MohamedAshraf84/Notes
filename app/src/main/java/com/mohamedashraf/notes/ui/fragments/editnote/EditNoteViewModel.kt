@@ -9,21 +9,19 @@ class EditNoteViewModel : ViewModel() {
     private val noteDetails = MutableLiveData<String>("")
     private val charactersCnt = MutableLiveData<Int>(0)
 
-    fun updateNoteTitle(title:String)
+    fun setNoteTitle(title:String)
     {
         noteTitle.value = title
-        updateCharsCounter(noteTitle.value!!.length + (noteDetails.value?.length ?: 0))
     }
 
-    fun updateNoteDetails(details:String)
+    fun setNoteDetails(details:String)
     {
         noteDetails.value = details
-        updateCharsCounter(noteTitle.value!!.length + (noteDetails.value?.length ?: 0))
     }
 
-    private fun updateCharsCounter(charsCounter:Int)
+    fun setCharsCounter(charsCounter:Int)
     {
-        this.charactersCnt.value = charsCounter
+        charactersCnt.value = charsCounter
     }
 
 
