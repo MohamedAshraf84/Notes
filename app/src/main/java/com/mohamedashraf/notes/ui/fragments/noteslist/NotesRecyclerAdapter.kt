@@ -16,18 +16,19 @@ import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
 import com.mohamedashraf.notes.databinding.ItemNoteListBinding
 
-class NotesRecyclerAdapter(private val context:Context, private var notesList:List<NoteEntity> = emptyList<NoteEntity>())
+class NotesRecyclerAdapter(private val context:Context, private var notesList:ArrayList<NoteEntity> = ArrayList<NoteEntity>())
     : RecyclerView.Adapter<NotesRecyclerAdapter.NoteViewHolder>(){
-
+        private val TAG : String = "Adapter"
         private lateinit var itemNoteBinding : ItemNoteListBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
 
+        Log.d(TAG, "onCreateViewHolder: ")
         return NoteViewHolder(LayoutInflater.from(context).inflate(R.layout.item_note_list, parent, false))
     }
 
     override fun onBindViewHolder(noteViewHolder: NoteViewHolder, position: Int) {
 
-        Log.d("DEBUG", "onBindViewHolder}")
+        Log.d(TAG, "onBindViewHolder, pos = ${position}")
         val note: NoteEntity = notesList[position]
         noteViewHolder.bind(position, note)
         noteViewHolder.setListeners()
@@ -40,12 +41,10 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Li
 
     override fun getItemCount(): Int = notesList.size
 
-    fun setData(notes: List<NoteEntity>)
+    fun setList(notes: ArrayList<NoteEntity>)
     {
         notesList = notes
-        notifyItemInserted(notesList.size)
     }
-
 
     inner class NoteViewHolder(itemView: View) : ViewHolder(itemView), View.OnClickListener  {
 
@@ -71,17 +70,19 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Li
 
         fun setListeners() {
             ivDelete.setOnClickListener(this@NoteViewHolder)
-            noteView.setOnClickListener(this@NoteViewHolder)
+            //noteView.setOnClickListener(this@NoteViewHolder)
         }
 
         override fun onClick(view: View?) {
             when(view?.id)
             {
                 R.id.iv_delete -> {
-                    Toast.makeText(context, "Delete Clicked", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Delete Clicked: ${currentPosition}", Toast.LENGTH_LONG).show()
+
                 }
             }
         }
     }
+
 
 }

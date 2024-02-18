@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.btnAddNote.setOnClickListener {
-            setAddNodeBtnVisible(false)
+            setAddNodeBtnVisible(true)
             navController.navigate(R.id.action_NotesList_to_EditNote)
         }
     }

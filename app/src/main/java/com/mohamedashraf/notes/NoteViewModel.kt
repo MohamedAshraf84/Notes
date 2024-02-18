@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.room.RoomDatabase
 import com.mohamedashraf.notes.database.NoteEntity
@@ -16,7 +17,7 @@ import kotlinx.coroutines.withContext
 class NoteViewModel() : ViewModel()
 {
     private val noteRepository : NoteRepository
-    var allNotes : LiveData<List<NoteEntity>>
+    var allNotes : LiveData<ArrayList<NoteEntity>>
     init {
         val notesDao = NotesDatabase.getNotesDaoInstance(NotesApplication.getApplicationContext())
         noteRepository = NoteRepository(notesDao)
