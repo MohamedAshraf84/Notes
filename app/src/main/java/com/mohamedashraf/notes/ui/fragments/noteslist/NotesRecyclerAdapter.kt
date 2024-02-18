@@ -20,6 +20,7 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
     : RecyclerView.Adapter<NotesRecyclerAdapter.NoteViewHolder>(){
         private val TAG : String = "Adapter"
         private lateinit var itemNoteBinding : ItemNoteListBinding
+        private lateinit var deleteClickedListener : OnItemDeleteClickedListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
 
         Log.d(TAG, "onCreateViewHolder: ")
@@ -44,6 +45,7 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
     fun setList(notes: ArrayList<NoteEntity>)
     {
         notesList = notes
+        notifyDataSetChanged()
     }
 
     inner class NoteViewHolder(itemView: View) : ViewHolder(itemView), View.OnClickListener  {
@@ -78,11 +80,30 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
             {
                 R.id.iv_delete -> {
                     Toast.makeText(context, "Delete Clicked: ${currentPosition}", Toast.LENGTH_LONG).show()
-
+                    deleteNote(currentPosition)
+                    deleteClickedListener.let {
+                        deleteClickedListener.onClick(currentNote.noteId)
+                    }
                 }
             }
         }
     }
+
+    fun deleteNote(position: Int)
+    {
+        notesList.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, notesList.size)
+    }
+    fun setOnItemDeleteClickedListener(listener: OnItemDeleteClickedListener)
+    {
+        deleteClickedListener = listener
+    }
+    interface OnItemDeleteClickedListener
+    {
+        fun onClick(noteId: Long)
+    }
+
 
 
 }

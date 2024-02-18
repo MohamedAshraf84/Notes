@@ -38,6 +38,13 @@ class NoteViewModel() : ViewModel()
         }
     }
 
+    fun deleteNoteById(noteId: Long)
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            noteRepository.deleteNoteById(noteId)
+        }
+    }
+
     fun updateNote(note : NoteEntity)
     {
         viewModelScope.launch(Dispatchers.IO) {

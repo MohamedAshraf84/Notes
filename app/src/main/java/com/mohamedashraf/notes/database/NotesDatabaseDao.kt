@@ -17,6 +17,9 @@ interface NotesDatabaseDao {
     @Delete
     suspend fun delete(note: NoteEntity)
 
+    @Query("DELETE FROM note_entity WHERE note_id = :noteId")
+    suspend fun deleteNoteById(noteId: Long)
+
     @Update
     suspend fun update(note: NoteEntity)
 

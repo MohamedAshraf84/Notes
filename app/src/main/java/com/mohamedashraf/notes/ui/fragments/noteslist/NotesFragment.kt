@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mohamedashraf.notes.NoteRepository
 import com.mohamedashraf.notes.NoteViewModel
 import com.mohamedashraf.notes.database.NoteEntity
 import com.mohamedashraf.notes.databinding.FragmentNotesListBinding
@@ -41,6 +42,11 @@ class NotesFragment : Fragment() {
         notesViewModel = ViewModelProvider(this) [NoteViewModel::class.java]
 
         setupRecyclerView()
+        notesAdapter.setOnItemDeleteClickedListener(object : NotesRecyclerAdapter.OnItemDeleteClickedListener{
+            override fun onClick(noteId: Long) {
+                notesViewModel.deleteNoteById(noteId)
+            }
+        })
 
         notesViewModel.allNotes.observe(viewLifecycleOwner)
         {
