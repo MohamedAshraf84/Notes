@@ -18,6 +18,9 @@ class NoteViewModel() : ViewModel()
 {
     private val noteRepository : NoteRepository
     var allNotes : LiveData<ArrayList<NoteEntity>>
+    val searchResults: MutableLiveData<List<NoteEntity>> by lazy {
+        MutableLiveData<List<NoteEntity>>()
+    }
     init {
         val notesDao = NotesDatabase.getNotesDaoInstance(NotesApplication.getApplicationContext())
         noteRepository = NoteRepository(notesDao)
@@ -35,6 +38,17 @@ class NoteViewModel() : ViewModel()
     {
         viewModelScope.launch(Dispatchers.IO) {
             noteRepository.deleteNote(note)
+        }
+    }
+
+    fun searchNotes(searchKey : String)
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            val notes = noteRepository.searchNotes(searchKey)
+            withContext(Dispatchers.Main) {
+                searchResults.value = notes
+                Log.d("DDD", "searchNotes: ${searchResults.value}")
+            }
         }
     }
 

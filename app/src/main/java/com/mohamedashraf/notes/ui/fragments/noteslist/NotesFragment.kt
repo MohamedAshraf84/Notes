@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,6 +53,27 @@ class NotesFragment : Fragment() {
         {
             notesAdapter.setList(it)
         }
+
+        notesViewModel.searchResults.observe(viewLifecycleOwner)
+        {
+            notesAdapter.setList(it as ArrayList<NoteEntity>)
+        }
+
+        binding.searchViewNotes.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true;
+            }
+
+            override fun onQueryTextChange(queryString: String?): Boolean {
+                queryString?.let {
+                    val searchKey = "%${queryString}%"
+                    notesViewModel.searchNotes(searchKey)
+                    return true
+                }
+                return false
+            }
+
+        })
     }
 
     private fun setupRecyclerView()

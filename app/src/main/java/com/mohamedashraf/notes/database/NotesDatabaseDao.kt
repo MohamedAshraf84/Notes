@@ -31,5 +31,7 @@ interface NotesDatabaseDao {
 
     @Query("SELECT * FROM note_entity WHERE note_id = :noteId")
     suspend fun getNoteById(noteId: Long): NoteEntity?
+    @Query("SELECT * FROM note_entity WHERE note_title LIKE :searchKey")
+    suspend fun searchNotes(searchKey: String): List<NoteEntity>
 
 }

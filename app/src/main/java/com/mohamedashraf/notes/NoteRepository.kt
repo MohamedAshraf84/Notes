@@ -26,4 +26,9 @@ class NoteRepository(private val notesDao : NotesDatabaseDao) {
     {
         notesDao.update(noteToUpdate)
     }
+
+    suspend fun searchNotes(searchKey : String) : List<NoteEntity>
+    {
+        return notesDao.searchNotes(searchKey)
+    }
 }
