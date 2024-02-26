@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamedashraf.notes.NoteRepository
 import com.mohamedashraf.notes.NoteViewModel
+import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
 import com.mohamedashraf.notes.databinding.FragmentNotesListBinding
 import java.text.SimpleDateFormat
@@ -39,7 +41,7 @@ class NotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        notesRecyclerView = binding.recyclerView
+        notesRecyclerView = binding.notesRV
         notesViewModel = ViewModelProvider(this) [NoteViewModel::class.java]
 
         setupRecyclerView()
@@ -57,6 +59,10 @@ class NotesFragment : Fragment() {
         notesViewModel.searchResults.observe(viewLifecycleOwner)
         {
             notesAdapter.setList(it as ArrayList<NoteEntity>)
+        }
+
+        binding.btnAddNote.setOnClickListener {
+            findNavController().navigate(R.id.action_NotesList_to_EditNote)
         }
 
         binding.searchViewNotes.setOnQueryTextListener(object: SearchView.OnQueryTextListener{

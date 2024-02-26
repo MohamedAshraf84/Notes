@@ -33,10 +33,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.btnAddNote.setOnClickListener {
-            setAddNodeBtnVisible(true)
-            navController.navigate(R.id.action_NotesList_to_EditNote)
-        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -61,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setAddNodeBtnVisible(isVisible: Boolean)
     {
-        binding.btnAddNote.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+        //binding.btnAddNote.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
     }
 
     @Deprecated("Deprecated in Java")
