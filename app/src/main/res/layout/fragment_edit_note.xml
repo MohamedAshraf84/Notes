@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,144 +7,225 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.fragments.editnote.EditNoteFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="@dimen/guideline_horizontal_top_constraint" />
+        <ScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_begin="@dimen/guideline_vertical_constraint" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_end="@dimen/guideline_vertical_constraint" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_end="@dimen/guideline_horizontal_bottom_constraint" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ed_note_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/note_title_hint"
-                    android:textColorHint="#5C6BC0"
-                    app:boxBackgroundMode="none"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintStart_toStartOf="@+id/guideline2"
-                    app:layout_constraintTop_toTopOf="@+id/guideline" >
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="top"
-                            android:textCursorDrawable="@drawable/text_cursor"
-                            android:textSize="22sp"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="February 10"
-                    app:layout_constraintStart_toStartOf="@+id/guideline2"
-                    app:layout_constraintTop_toBottomOf="@+id/ed_note_title" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="07:30 AM"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_date"
-                    app:layout_constraintStart_toEndOf="@+id/tv_date"
-                    app:layout_constraintTop_toTopOf="@+id/tv_date" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_chars_counter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-
-                    android:text="0 characters"
-                    app:layout_constraintBottom_toBottomOf="@+id/view"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintHorizontal_bias="0.08"
-                    app:layout_constraintStart_toEndOf="@+id/view"
-                    app:layout_constraintTop_toTopOf="@+id/view"
-                    app:layout_constraintVertical_bias="0.5" />
-
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="1dp"
-                    android:layout_height="14dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_time"
-                    app:layout_constraintStart_toEndOf="@+id/tv_time"
-                    app:layout_constraintTop_toTopOf="@+id/tv_time" />
-
-                <ScrollView
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline5"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintStart_toStartOf="@+id/guideline2"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_date">
+                    tools:visibility="visible">
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintGuide_begin="@dimen/guideline_horizontal_top_constraint" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_begin="@dimen/guideline_vertical_constraint" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_end="8dp" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintGuide_end="@dimen/guideline_horizontal_bottom_constraint" />
+
+                        <ImageView
+                            android:id="@+id/bt_add_finish"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="26dp"
+                            android:src="@drawable/ic_finish"
+                            app:layout_constraintBottom_toTopOf="@+id/guideline"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/ed_note_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/note_title_hint"
+                            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                            app:layout_constraintStart_toStartOf="@+id/guideline2"
+                            app:layout_constraintTop_toTopOf="@+id/guideline">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="top"
+                                    android:textCursorDrawable="@drawable/text_cursor"
+                                    android:textSize="20sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            tools:text="February 10"
+                            app:layout_constraintStart_toStartOf="@+id/guideline2"
+                            app:layout_constraintTop_toBottomOf="@+id/ed_note_title" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            tools:text="07:30 AM"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+                            app:layout_constraintStart_toEndOf="@+id/tv_date"
+                            app:layout_constraintTop_toTopOf="@+id/tv_date" />
+
+                        <View
+                            android:id="@+id/view"
+                            android:layout_width="1dp"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="8dp"
+                            android:background="@android:color/darker_gray"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_time"
+                            app:layout_constraintStart_toEndOf="@+id/tv_time"
+                            app:layout_constraintTop_toTopOf="@+id/tv_time" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_chars_counter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            tools:text="0 characters"
+                            app:layout_constraintBottom_toBottomOf="@+id/view"
+                            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                            app:layout_constraintHorizontal_bias="0.08"
+                            app:layout_constraintStart_toEndOf="@+id/view"
+                            app:layout_constraintTop_toTopOf="@+id/view"
+                            app:layout_constraintVertical_bias="0.5" />
+
+                        <ImageView
+                            android:id="@+id/iv_note_image"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_note_attached_link"
+                            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                            app:layout_constraintStart_toStartOf="@+id/guideline2"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_date"
+                            tools:src="@tools:sample/avatars" />
+
+                        <TextView
+                            android:id="@+id/tv_note_attached_link"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@+id/ed_note_details"
+                            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                            app:layout_constraintStart_toStartOf="@+id/guideline2"
+                            app:layout_constraintTop_toBottomOf="@+id/iv_note_image"
+                            tools:text="Link" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/ed_note_details"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="top"
-                            android:layout_margin="4dp"
                             android:hint="@string/note_details_hint"
-                            android:textColorHint="#269ED6"
-                            app:boxBackgroundMode="none"
                             app:layout_constraintBottom_toTopOf="@+id/guideline5"
                             app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                            app:layout_constraintHorizontal_bias="1.0"
                             app:layout_constraintStart_toStartOf="@+id/guideline2"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_date"
-                            app:layout_constraintVertical_bias="0.0" >
+                            app:layout_constraintTop_toBottomOf="@id/tv_note_attached_link">
+
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:layout_width="match_parent"
-                                    android:gravity="top"
                                     android:layout_height="wrap_content"
-                                    android:textCursorDrawable="@drawable/text_cursor"/>
+                                    android:gravity="top"
+                                    android:textCursorDrawable="@drawable/text_cursor" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                </ScrollView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
-                <ImageView
-                    android:id="@+id/bt_add_finish"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scroll_view">
+
+                <ImageButton
+                    android:id="@+id/btn_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="26dp"
-                    android:src="@drawable/ic_finish"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:src="@drawable/ic_bold"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@null"
+                    android:contentDescription="TODO" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageButton
+                    android:id="@+id/btn_italic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_italic"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@null"
+                    android:contentDescription="TODO" />
 
-</FrameLayout>
+                <ImageButton
+                    android:id="@+id/btn_underline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_underline"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@null"
+                    android:contentDescription="TODO" />
+
+                <ImageButton
+                    android:id="@+id/btn_add_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_attach_image"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@null"
+                    android:contentDescription="TODO" />
+
+                <ImageButton
+                    android:id="@+id/btn_attach_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_link"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@null"
+                    android:contentDescription="TODO" />
+        </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

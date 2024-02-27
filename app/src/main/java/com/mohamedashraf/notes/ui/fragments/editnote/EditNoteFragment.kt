@@ -13,8 +13,6 @@ import com.mohamedashraf.notes.NoteViewModel
 import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
 import com.mohamedashraf.notes.databinding.FragmentEditNoteBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -38,7 +36,6 @@ class EditNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModelScope = CoroutineScope(Dispatchers.Main)
 
         editNoteViewModel = ViewModelProvider(requireActivity())[EditNoteViewModel::class.java]
         noteViewModel = ViewModelProvider(requireActivity())[NoteViewModel::class.java]
@@ -100,6 +97,7 @@ class EditNoteFragment : Fragment() {
                 creationTime = binding.tvTime.text.toString()
             )
 
+
             if (args.note == null) {
                 noteViewModel.addNoteToDataBase(note)
             } else {
@@ -115,7 +113,8 @@ class EditNoteFragment : Fragment() {
     {
         val cnt = (binding.edNoteTitle.editText?.text?.length?: 0)  +
                   (binding.edNoteDetails.editText?.text?.length?: 0)
-        binding.tvCharsCounter.text = cnt.toString()
+
+        binding.tvCharsCounter.text = "${cnt.toString()} Characters"
     }
 
     private fun getCurrentDate() : String

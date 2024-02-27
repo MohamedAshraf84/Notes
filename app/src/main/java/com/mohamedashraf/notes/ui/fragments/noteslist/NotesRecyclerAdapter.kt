@@ -56,7 +56,7 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
         private val txtNoteBody = itemView.findViewById<TextView>(R.id.txt_note_details)
         private val txtNoteCreationDate = itemView.findViewById<TextView>(R.id.txt_note_creation_date)
         private val txtNoteCreationTime = itemView.findViewById<TextView>(R.id.txt_note_creation_time)
-        private val ivDelete = itemView.findViewById<ImageView>(R.id.iv_delete)
+        //private val ivDelete = itemView.findViewById<ImageView>(R.id.iv_delete)
         private val noteView = itemView.findViewById<CardView>(R.id.note_view)
 
         fun bind(position: Int, note: NoteEntity)
@@ -71,20 +71,20 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
         }
 
         fun setListeners() {
-            ivDelete.setOnClickListener(this@NoteViewHolder)
+            //ivDelete.setOnClickListener(this@NoteViewHolder)
             //noteView.setOnClickListener(this@NoteViewHolder)
         }
 
         override fun onClick(view: View?) {
             when(view?.id)
             {
-                R.id.iv_delete -> {
+                /*R.id.iv_delete -> {
                     Toast.makeText(context, "Delete Clicked: ${currentPosition}", Toast.LENGTH_LONG).show()
                     deleteNote(currentPosition)
                     deleteClickedListener.let {
                         deleteClickedListener.onClick(currentNote.noteId)
                     }
-                }
+                }*/
             }
         }
     }
@@ -103,7 +103,5 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
     {
         fun onClick(noteId: Long)
     }
-
-
 
 }
