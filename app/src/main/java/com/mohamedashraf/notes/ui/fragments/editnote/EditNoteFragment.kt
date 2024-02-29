@@ -1,17 +1,23 @@
 package com.mohamedashraf.notes.ui.fragments.editnote
 
+import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.mohamedashraf.notes.NoteViewModel
 import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
+import com.mohamedashraf.notes.databinding.CustomDialogBinding
 import com.mohamedashraf.notes.databinding.FragmentEditNoteBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,6 +31,10 @@ class EditNoteFragment : Fragment() {
     private lateinit var noteViewModel: NoteViewModel
     private var _binding: FragmentEditNoteBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var alertDialog: AlertDialog
+
+    private lateinit var dialogBinding: CustomDialogBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,6 +49,18 @@ class EditNoteFragment : Fragment() {
 
         editNoteViewModel = ViewModelProvider(requireActivity())[EditNoteViewModel::class.java]
         noteViewModel = ViewModelProvider(requireActivity())[NoteViewModel::class.java]
+
+        dialogBinding = CustomDialogBinding.inflate(layoutInflater, null, false)
+
+        alertDialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
+        alertDialog.window?.apply {
+            setGravity(Gravity.BOTTOM)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+        dialogBinding.btnCancel.setOnClickListener()
+        {
+            alertDialog.dismiss()
+        }
 
         if (args.note != null) // existing note
         {
@@ -58,6 +80,7 @@ class EditNoteFragment : Fragment() {
             updateCharsCnt()
 
         }
+
         binding.edNoteDetails.editText?.addTextChangedListener()
         {
             editNoteViewModel.setNoteDetails(it.toString())
@@ -69,6 +92,10 @@ class EditNoteFragment : Fragment() {
             editNoteViewModel.setCharsCounter(it?.length ?: 0)
         }
 
+        binding.btnAddImage.setOnClickListener()
+        {
+            alertDialog.show()
+        }
 
         editNoteViewModel.getNoteTitle().observe(viewLifecycleOwner)
         {
@@ -86,7 +113,6 @@ class EditNoteFragment : Fragment() {
             //binding.tvCharsCounter.text = "$it ${getString(R.string.characters)}"
             //Toast.makeText(requireContext(), "Chars Changed", Toast.LENGTH_SHORT).show()
         }
-
 
         binding.btAddFinish.setOnClickListener {
 
@@ -107,6 +133,7 @@ class EditNoteFragment : Fragment() {
 
             findNavController().navigate(R.id.action_EditNoteFragment_to_NotesFragment)
         }
+
     }
 
     private fun updateCharsCnt()
