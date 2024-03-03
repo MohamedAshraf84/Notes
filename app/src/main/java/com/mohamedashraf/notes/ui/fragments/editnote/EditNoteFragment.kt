@@ -10,7 +10,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -33,16 +34,20 @@ class EditNoteFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var alertDialog: AlertDialog
-
     private lateinit var dialogBinding: CustomDialogBinding
+
+    private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
 
+        registerForGalleryResult()
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,6 +62,7 @@ class EditNoteFragment : Fragment() {
             setGravity(Gravity.BOTTOM)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
+
         dialogBinding.btnCancel.setOnClickListener()
         {
             alertDialog.dismiss()
@@ -97,6 +103,12 @@ class EditNoteFragment : Fragment() {
             alertDialog.show()
         }
 
+        dialogBinding.btnGallery.setOnClickListener()
+        {
+            pickImageLauncher.launch("image/*")
+            alertDialog.dismiss()
+        }
+
         editNoteViewModel.getNoteTitle().observe(viewLifecycleOwner)
         {
             //binding.edNoteTitle.editText?.text = it.toString()
@@ -134,6 +146,13 @@ class EditNoteFragment : Fragment() {
             findNavController().navigate(R.id.action_EditNoteFragment_to_NotesFragment)
         }
 
+    }
+
+    private fun registerForGalleryResult()
+    {
+        pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
+            binding.ivNoteImage.setImageURI(it)
+        }
     }
 
     private fun updateCharsCnt()
