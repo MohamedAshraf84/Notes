@@ -1,15 +1,20 @@
 package com.mohamedashraf.notes.ui.fragments.editnote
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
@@ -18,6 +23,7 @@ import androidx.navigation.fragment.navArgs
 import com.mohamedashraf.notes.NoteViewModel
 import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
+import com.mohamedashraf.notes.databinding.AddLinkDialogBinding
 import com.mohamedashraf.notes.databinding.CustomDialogBinding
 import com.mohamedashraf.notes.databinding.FragmentEditNoteBinding
 import java.text.SimpleDateFormat
@@ -35,6 +41,9 @@ class EditNoteFragment : Fragment() {
 
     private lateinit var alertDialog: AlertDialog
     private lateinit var dialogBinding: CustomDialogBinding
+
+    private lateinit var addLinkDialog: AlertDialog
+    private lateinit var addLinkDialogBinding: AddLinkDialogBinding
 
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
 
@@ -56,6 +65,7 @@ class EditNoteFragment : Fragment() {
         noteViewModel = ViewModelProvider(requireActivity())[NoteViewModel::class.java]
 
         dialogBinding = CustomDialogBinding.inflate(layoutInflater, null, false)
+        addLinkDialogBinding = AddLinkDialogBinding.inflate(layoutInflater, null, false)
 
         alertDialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
         alertDialog.window?.apply {
@@ -63,10 +73,11 @@ class EditNoteFragment : Fragment() {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
-        dialogBinding.btnCancel.setOnClickListener()
-        {
-            alertDialog.dismiss()
+        addLinkDialog = AlertDialog.Builder(requireContext()).setView(addLinkDialogBinding.root).create()
+        addLinkDialog.window?.apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
+
 
         if (args.note != null) // existing note
         {
@@ -103,10 +114,47 @@ class EditNoteFragment : Fragment() {
             alertDialog.show()
         }
 
+        binding.btnAttachLink.setOnClickListener()
+        {
+            addLinkDialog.show()
+        }
+
+        binding.tvNoteAttachedLink.setOnClickListener()
+        {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW,
+                    Uri.parse(binding.tvNoteAttachedLink.text.toString())))
+            }catch (_: Exception)
+            {
+                Toast.makeText(requireContext(), "Invalid link.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         dialogBinding.btnGallery.setOnClickListener()
         {
             pickImageLauncher.launch("image/*")
             alertDialog.dismiss()
+        }
+
+        dialogBinding.btnCancel.setOnClickListener()
+        {
+            alertDialog.dismiss()
+        }
+
+
+        addLinkDialogBinding.btnOk.setOnClickListener {
+            val linkText = addLinkDialogBinding.etLink.text.toString()
+            val underlinedText = SpannableString(linkText).apply {
+                setSpan(UnderlineSpan(), 0, length, 0)
+            }
+            binding.tvNoteAttachedLink.text = underlinedText
+            addLinkDialog.dismiss()
+        }
+
+
+        addLinkDialogBinding.btnCancel.setOnClickListener()
+        {
+            addLinkDialog.dismiss()
         }
 
         editNoteViewModel.getNoteTitle().observe(viewLifecycleOwner)
