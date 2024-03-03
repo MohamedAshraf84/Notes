@@ -147,7 +147,11 @@ class EditNoteFragment : Fragment() {
             val underlinedText = SpannableString(linkText).apply {
                 setSpan(UnderlineSpan(), 0, length, 0)
             }
-            binding.tvNoteAttachedLink.text = underlinedText
+
+            binding.tvNoteAttachedLink.apply {
+                text = underlinedText
+                visibility = View.VISIBLE
+            }
             addLinkDialog.dismiss()
         }
 
@@ -199,7 +203,11 @@ class EditNoteFragment : Fragment() {
     private fun registerForGalleryResult()
     {
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
-            binding.ivNoteImage.setImageURI(it)
+
+            binding.ivNoteImage.apply {
+                setImageURI(it)
+                visibility = View.VISIBLE
+            }
         }
     }
 
