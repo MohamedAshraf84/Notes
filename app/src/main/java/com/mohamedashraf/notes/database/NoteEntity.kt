@@ -10,11 +10,27 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "note_entity")
 data class NoteEntity (
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "note_id")
     var noteId:Long = 0,
-    @ColumnInfo(name = "note_title") var noteTitle:String = "",
-    @ColumnInfo(name = "note_body") var noteBody:String = "",
-    @ColumnInfo(name = "note_date") val creationDate:String,
-    @ColumnInfo(name = "note_time") val creationTime:String
+
+    @ColumnInfo(name = "note_title")
+    var noteTitle:String = "",
+
+    @ColumnInfo(name = "note_body")
+    var noteBody:String = "",
+
+    @ColumnInfo(name = "image_path")
+    var noteImagePath:String = "",
+
+    @ColumnInfo(name = "attached_link")
+    var noteAttachedLink:String = "",
+
+    @ColumnInfo(name = "creation_date")
+    val creationDate:String,
+
+    @ColumnInfo(name = "creation_time")
+    val creationTime:String
+
 ) : Parcelable
