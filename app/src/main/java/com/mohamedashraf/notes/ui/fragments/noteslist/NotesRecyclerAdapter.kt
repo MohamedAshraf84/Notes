@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -18,9 +19,9 @@ import com.mohamedashraf.notes.databinding.ItemNoteListBinding
 
 class NotesRecyclerAdapter(private val context:Context, private var notesList:ArrayList<NoteEntity> = ArrayList<NoteEntity>())
     : RecyclerView.Adapter<NotesRecyclerAdapter.NoteViewHolder>(){
-        private val TAG : String = "Adapter"
-        private lateinit var itemNoteBinding : ItemNoteListBinding
-        private lateinit var deleteClickedListener : OnItemDeleteClickedListener
+    private val TAG : String = "Adapter"
+    private lateinit var itemNoteBinding : ItemNoteListBinding
+    private lateinit var deleteClickedListener : OnItemDeleteClickedListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
 
         Log.d(TAG, "onCreateViewHolder: ")
@@ -33,6 +34,7 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
         val note: NoteEntity = notesList[position]
         noteViewHolder.bind(position, note)
         noteViewHolder.setListeners()
+
         noteViewHolder.itemView.findViewById<CardView>(R.id.note_view).setOnClickListener()
         {
             val action = NotesFragmentDirections.actionNotesListToEditNote(note)
@@ -54,6 +56,10 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
         private lateinit var currentNote: NoteEntity
         private val txtNoteTitle = itemView.findViewById<TextView>(R.id.txt_note_title)
         private val txtNoteBody = itemView.findViewById<TextView>(R.id.txt_note_details)
+
+        private val txtNoteLink = itemView.findViewById<TextView>(R.id.tv_note_link)
+        private val ivNoteImage = itemView.findViewById<ImageView>(R.id.iv_note_image)
+
         private val txtNoteCreationDate = itemView.findViewById<TextView>(R.id.txt_note_creation_date)
         private val txtNoteCreationTime = itemView.findViewById<TextView>(R.id.txt_note_creation_time)
         //private val ivDelete = itemView.findViewById<ImageView>(R.id.iv_delete)
@@ -66,6 +72,10 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
 
             txtNoteTitle.text = note.noteTitle
             txtNoteBody.text = note.noteBody
+
+            txtNoteLink.text = note.noteAttachedLink
+            ivNoteImage.setImageURI(note.noteImagePath.toUri())
+
             txtNoteCreationDate.text = note.creationDate
             txtNoteCreationTime.text = note.creationTime
         }

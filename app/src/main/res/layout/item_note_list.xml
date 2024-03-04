@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/note_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_margin="4dp"
+    android:layout_margin="@dimen/_4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    app:cardCornerRadius="25dp"
-    app:contentPadding="8dp">
+    android:layout_marginBottom="@dimen/_4dp"
+    app:cardCornerRadius="@dimen/_24sp"
+    app:contentPadding="@dimen/_8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="@dimen/_8dp">
 
 
         <TextView
@@ -22,11 +22,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/combo_regular"
-            android:text="Note Title"
-            android:textColor="#21F3E1"
-            android:textSize="18sp"
+            tools:text="Note Title"
+            android:textSize="@dimen/_18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            app:layout_constraintBottom_toTopOf="@+id/iv_note_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,25 +34,25 @@
             android:id="@+id/txt_note_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginStart="@dimen/_4dp"
+            android:layout_marginTop="@dimen/_2dp"
+            android:layout_marginBottom="@dimen/_2dp"
             android:ellipsize="end"
             android:fontFamily="casual"
             android:gravity="center_vertical"
-            android:maxLines="1"
-            android:text="Note Details"
-            android:textSize="16sp"
+            android:maxLines="2"
+            tools:text="Note Details"
+            android:textSize="@dimen/_16sp"
             app:layout_constraintBottom_toTopOf="@+id/iv_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_note_link" />
 
         <ImageView
             android:id="@+id/iv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/_4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/txt_note_creation_date"
             app:layout_constraintHorizontal_bias="0.5"
@@ -66,8 +65,8 @@
             android:id="@+id/iv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginStart="@dimen/_4dp"
+            android:layout_marginEnd="@dimen/_4dp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_note_creation_date"
             app:layout_constraintEnd_toStartOf="@+id/txt_note_creation_time"
             app:layout_constraintHorizontal_bias="0.5"
@@ -79,8 +78,8 @@
             android:id="@+id/txt_note_creation_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Time"
-            android:textSize="12sp"
+            tools:text="Creation Time"
+            android:textSize="@dimen/_12sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -91,9 +90,9 @@
             android:id="@+id/txt_note_creation_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="Date"
-            android:textSize="12sp"
+            android:layout_marginStart="@dimen/_4dp"
+            tools:text="Creation Date"
+            android:textSize="@dimen/_12sp"
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="@+id/iv_date"
             app:layout_constraintEnd_toStartOf="@+id/iv_time"
@@ -102,31 +101,34 @@
             app:layout_constraintTop_toTopOf="@+id/iv_date" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/iv_note_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView"
+            android:layout_margin="@dimen/_4dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toTopOf="@+id/tv_note_link"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_note_title"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tv_note_link"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:textSize="16sp"
+            android:layout_marginStart="@dimen/_4dp"
+            android:layout_marginTop="@dimen/_4dp"
+            android:layout_marginEnd="@dimen/_32dp"
+            android:layout_marginBottom="@dimen/_4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/_14sp"
             app:layout_constraintBottom_toTopOf="@+id/txt_note_details"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/iv_note_image"
             tools:text="Link" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
