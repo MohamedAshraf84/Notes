@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_8dp">
+        android:padding="@dimen/_4dp">
 
 
         <TextView
@@ -104,7 +104,7 @@
             android:id="@+id/iv_note_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_4dp"
+            android:layout_margin="@dimen/_2dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toTopOf="@+id/tv_note_link"
@@ -118,9 +118,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4dp"
-            android:layout_marginTop="@dimen/_4dp"
             android:layout_marginEnd="@dimen/_32dp"
-            android:layout_marginBottom="@dimen/_4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/blue"

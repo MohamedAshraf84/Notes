@@ -1,12 +1,17 @@
 package com.mohamedashraf.notes.ui.fragments.editnote
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.Gravity
@@ -17,14 +22,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.mohamedashraf.notes.NoteViewModel
 import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
+import com.mohamedashraf.notes.databinding.AddImageDialogBinding
 import com.mohamedashraf.notes.databinding.AddLinkDialogBinding
-import com.mohamedashraf.notes.databinding.CustomDialogBinding
 import com.mohamedashraf.notes.databinding.FragmentEditNoteBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -39,13 +47,14 @@ class EditNoteFragment : Fragment() {
     private var _binding: FragmentEditNoteBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var alertDialog: AlertDialog
-    private lateinit var dialogBinding: CustomDialogBinding
+    private lateinit var addImageDialog: AlertDialog
+    private lateinit var addImageDialogBinding: AddImageDialogBinding
 
     private lateinit var addLinkDialog: AlertDialog
     private lateinit var addLinkDialogBinding: AddLinkDialogBinding
 
-    private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+    private lateinit var requestGalleryPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,10 +62,14 @@ class EditNoteFragment : Fragment() {
     ): View {
         _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
 
-        registerForGalleryResult()
         return binding.root
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        registerPermissions()
+        registerForGalleryResult()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,11 +77,11 @@ class EditNoteFragment : Fragment() {
         editNoteViewModel = ViewModelProvider(requireActivity())[EditNoteViewModel::class.java]
         noteViewModel = ViewModelProvider(requireActivity())[NoteViewModel::class.java]
 
-        dialogBinding = CustomDialogBinding.inflate(layoutInflater, null, false)
+        addImageDialogBinding = AddImageDialogBinding.inflate(layoutInflater, null, false)
         addLinkDialogBinding = AddLinkDialogBinding.inflate(layoutInflater, null, false)
 
-        alertDialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
-        alertDialog.window?.apply {
+        addImageDialog = AlertDialog.Builder(requireContext()).setView(addImageDialogBinding.root).create()
+        addImageDialog.window?.apply {
             setGravity(Gravity.BOTTOM)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
@@ -79,23 +92,30 @@ class EditNoteFragment : Fragment() {
         }
 
 
-        if (args.note != null) // existing note
-        {
-            binding.edNoteTitle.editText?.setText(args.note?.noteTitle)
-            binding.edNoteDetails.editText?.setText(args.note?.noteBody)
-            binding.tvDate.text = args.note?.creationDate
-            binding.tvTime.text = args.note?.creationTime
+        args.note?.let { //existing note
+            binding.edNoteTitle.editText?.setText(it.noteTitle)
+            binding.edNoteDetails.editText?.setText(it.noteBody)
+
+            binding.ivNoteImage.visibility = View.VISIBLE
+            binding.ivNoteImage.setImageURI(it.noteImagePath.toUri())
+            binding.ivNoteImage.tag = it.noteImagePath.toUri()
+
+            binding.tvNoteAttachedLink.visibility = View.VISIBLE
+            binding.tvNoteAttachedLink.text = it.noteAttachedLink
+
+            binding.tvDate.text = it.creationDate
+            binding.tvTime.text = it.creationTime
             updateCharsCnt()
-        } else // new note
-        {
+
+        } ?: run {//new note
             binding.tvDate.text = getCurrentDate()
             binding.tvTime.text = getCurrentTime()
         }
 
+
         binding.edNoteTitle.editText?.addTextChangedListener {
             editNoteViewModel.setNoteTitle(it.toString())
             updateCharsCnt()
-
         }
 
         binding.edNoteDetails.editText?.addTextChangedListener()
@@ -111,7 +131,7 @@ class EditNoteFragment : Fragment() {
 
         binding.btnAddImage.setOnClickListener()
         {
-            alertDialog.show()
+            addImageDialog.show()
         }
 
         binding.btnAttachLink.setOnClickListener()
@@ -122,23 +142,26 @@ class EditNoteFragment : Fragment() {
         binding.tvNoteAttachedLink.setOnClickListener()
         {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW,
-                    Uri.parse(binding.tvNoteAttachedLink.text.toString())))
-            }catch (_: Exception)
-            {
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(binding.tvNoteAttachedLink.text.toString())
+                    )
+                )
+            } catch (_: Exception) {
                 Toast.makeText(requireContext(), "Invalid link.", Toast.LENGTH_SHORT).show()
             }
         }
 
-        dialogBinding.btnGallery.setOnClickListener()
+        addImageDialogBinding.btnGallery.setOnClickListener()
         {
-            pickImageLauncher.launch("image/*")
-            alertDialog.dismiss()
+            checkGalleryPermission()
+            addImageDialog.dismiss()
         }
 
-        dialogBinding.btnCancel.setOnClickListener()
+        addImageDialogBinding.btnCancel.setOnClickListener()
         {
-            alertDialog.dismiss()
+            addImageDialog.dismiss()
         }
 
 
@@ -179,20 +202,25 @@ class EditNoteFragment : Fragment() {
         }
 
         binding.btAddFinish.setOnClickListener {
+            var imagePath = ""
+            binding.ivNoteImage.tag?.let {
+                imagePath = it.toString()
+            }
 
             val note = NoteEntity(
                 noteTitle = binding.edNoteTitle.editText?.text.toString(),
                 noteBody = binding.edNoteDetails.editText?.text.toString(),
+                noteImagePath = imagePath,
+                noteAttachedLink = binding.tvNoteAttachedLink.text.toString(),
                 creationDate = binding.tvDate.text.toString(),
                 creationTime = binding.tvTime.text.toString()
             )
 
-
-            if (args.note == null) {
-                noteViewModel.addNoteToDataBase(note)
-            } else {
+            args.note?.let {
                 note.noteId = args.note?.noteId!!
                 noteViewModel.updateNote(note)
+            } ?: run {
+                noteViewModel.addNoteToDataBase(note)
             }
 
             findNavController().navigate(R.id.action_EditNoteFragment_to_NotesFragment)
@@ -200,21 +228,66 @@ class EditNoteFragment : Fragment() {
 
     }
 
-    private fun registerForGalleryResult()
-    {
-        pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
-
-            binding.ivNoteImage.apply {
-                setImageURI(it)
-                visibility = View.VISIBLE
+    private fun registerPermissions() {
+        requestGalleryPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                pickImage()
             }
         }
+    }
+
+    private fun registerForGalleryResult() {
+        pickImageLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
+                if (it.resultCode == Activity.RESULT_OK) {
+
+                    val selectedImageUri: Uri? = it.data?.data
+
+                    binding.ivNoteImage.apply {
+                        visibility = View.VISIBLE
+                        tag = selectedImageUri
+                        setImageURI(selectedImageUri)
+                    }
+                }
+            }
+    }
+
+    private fun checkGalleryPermission() {
+        val galleryPermission = Manifest.permission.READ_EXTERNAL_STORAGE
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                galleryPermission
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                pickImage()
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                galleryPermission
+            ) -> {
+                requestGalleryPermissionLauncher.launch(galleryPermission)
+            }
+
+            else -> {
+                requestGalleryPermissionLauncher.launch(galleryPermission)
+            }
+        }
+    }
+
+    private fun pickImage()
+    {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        pickImageLauncher.launch(intent)
     }
 
     private fun updateCharsCnt()
     {
         val cnt = (binding.edNoteTitle.editText?.text?.length?: 0)  +
-                  (binding.edNoteDetails.editText?.text?.length?: 0)
+                (binding.edNoteDetails.editText?.text?.length?: 0)
 
         binding.tvCharsCounter.text = "${cnt.toString()} Characters"
     }
@@ -228,5 +301,4 @@ class EditNoteFragment : Fragment() {
     {
         return SimpleDateFormat("hh:mm a", locale).format(Date())
     }
-
 }
