@@ -246,6 +246,12 @@ class EditNoteFragment : Fragment() {
 
                     val selectedImageUri: Uri? = it.data?.data
 
+                    requireActivity().grantUriPermission(requireActivity().packageName, selectedImageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    selectedImageUri?.run {
+                        val takeFlags: Int = it?.data?.flags?.and(Intent.FLAG_GRANT_READ_URI_PERMISSION) ?: 0
+                        requireActivity().contentResolver.takePersistableUriPermission(selectedImageUri, takeFlags)
+                    }
+
                     binding.ivNoteImage.apply {
                         visibility = View.VISIBLE
                         tag = selectedImageUri
@@ -254,6 +260,7 @@ class EditNoteFragment : Fragment() {
                 }
             }
     }
+
 
     private fun checkGalleryPermission() {
         val galleryPermission = Manifest.permission.READ_EXTERNAL_STORAGE
