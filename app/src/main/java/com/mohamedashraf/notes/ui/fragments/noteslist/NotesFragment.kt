@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mohamedashraf.notes.NoteRepository
 import com.mohamedashraf.notes.NoteViewModel
 import com.mohamedashraf.notes.R
@@ -25,7 +26,7 @@ class NotesFragment : Fragment() {
     private lateinit var notesRecyclerView: RecyclerView
     private lateinit var notesAdapter: NotesRecyclerAdapter
     private lateinit var notesViewModel: NoteViewModel
-    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var layoutManager: StaggeredGridLayoutManager
 
     private val binding get() = _binding!!
 
@@ -84,8 +85,7 @@ class NotesFragment : Fragment() {
 
     private fun setupRecyclerView()
     {
-        layoutManager = GridLayoutManager(context,1)
-        layoutManager.orientation = RecyclerView.VERTICAL
+        layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         notesRecyclerView.layoutManager = layoutManager
         notesAdapter = NotesRecyclerAdapter(requireContext() /*, setSampleData()*/)
         notesRecyclerView.adapter = notesAdapter
