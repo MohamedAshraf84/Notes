@@ -23,14 +23,12 @@ interface NotesDatabaseDao {
     @Update
     suspend fun update(note: NoteEntity)
 
-    @Query("SELECT * FROM note_entity")
+    @Query("SELECT * FROM note_entity ORDER BY is_pinned DESC, note_id ASC")
     fun getAllNotes() : LiveData<List<NoteEntity>>
-
-    @Query("SELECT * FROM note_entity")
-    suspend fun readAll() : List<NoteEntity>
 
     @Query("SELECT * FROM note_entity WHERE note_id = :noteId")
     suspend fun getNoteById(noteId: Long): NoteEntity?
+
     @Query("SELECT * FROM note_entity WHERE note_title LIKE :searchKey")
     suspend fun searchNotes(searchKey: String): List<NoteEntity>
 

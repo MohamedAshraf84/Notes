@@ -15,4 +15,6 @@
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
     <string name="attach_link">Attach Link</string>
+    <string name="delete">Delete</string>
+    <string name="pin">Pin</string>
 </resources>

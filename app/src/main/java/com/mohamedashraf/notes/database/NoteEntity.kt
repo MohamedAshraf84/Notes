@@ -3,7 +3,9 @@ package com.mohamedashraf.notes.database
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 
@@ -13,24 +15,30 @@ data class NoteEntity (
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "note_id")
-    var noteId:Long = 0,
+    var noteId: Long = 0,
 
     @ColumnInfo(name = "note_title")
-    var noteTitle:String = "",
+    var noteTitle: String = "",
 
     @ColumnInfo(name = "note_body")
-    var noteBody:String = "",
+    var noteBody: String = "",
 
     @ColumnInfo(name = "image_path")
-    var noteImagePath:String = "",
+    var noteImagePath: String = "",
 
     @ColumnInfo(name = "attached_link")
-    var noteAttachedLink:String = "",
+    var noteAttachedLink: String = "",
 
     @ColumnInfo(name = "creation_date")
-    val creationDate:String,
+    val creationDate: String,
 
     @ColumnInfo(name = "creation_time")
-    val creationTime:String
+    val creationTime: String,
 
-) : Parcelable
+    @ColumnInfo(name = "is_pinned")
+    var isPinned: Boolean = false,
+
+) : Parcelable{
+    @IgnoredOnParcel @Ignore
+    var isSelected: Boolean = false
+}

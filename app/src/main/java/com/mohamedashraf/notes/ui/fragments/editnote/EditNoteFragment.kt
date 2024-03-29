@@ -213,11 +213,12 @@ class EditNoteFragment : Fragment() {
                 noteImagePath = imagePath,
                 noteAttachedLink = binding.tvNoteAttachedLink.text.toString(),
                 creationDate = binding.tvDate.text.toString(),
-                creationTime = binding.tvTime.text.toString()
+                creationTime = binding.tvTime.text.toString(),
             )
 
             args.note?.let {
                 note.noteId = args.note?.noteId!!
+                note.isPinned = args.note?.isPinned!!
                 noteViewModel.updateNote(note)
             } ?: run {
                 noteViewModel.addNoteToDataBase(note)

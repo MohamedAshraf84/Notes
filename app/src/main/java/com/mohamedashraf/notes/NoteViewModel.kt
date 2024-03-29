@@ -21,6 +21,8 @@ class NoteViewModel() : ViewModel()
     val searchResults: MutableLiveData<List<NoteEntity>> by lazy {
         MutableLiveData<List<NoteEntity>>()
     }
+    private var isActionModeEnabled = MutableLiveData<Boolean>(false)
+    private var selectedNotes = MutableLiveData<HashSet<NoteEntity>>()
     init {
         val notesDao = NotesDatabase.getNotesDaoInstance(NotesApplication.getApplicationContext())
         noteRepository = NoteRepository(notesDao)
@@ -47,7 +49,6 @@ class NoteViewModel() : ViewModel()
             val notes = noteRepository.searchNotes(searchKey)
             withContext(Dispatchers.Main) {
                 searchResults.value = notes
-                Log.d("DDD", "searchNotes: ${searchResults.value}")
             }
         }
     }
@@ -59,6 +60,13 @@ class NoteViewModel() : ViewModel()
         }
     }
 
+    fun pinNoteById(noteId: Long)
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            noteRepository.pinNoteById(noteId)
+        }
+    }
+
     fun updateNote(note : NoteEntity)
     {
         viewModelScope.launch(Dispatchers.IO) {
@@ -66,4 +74,16 @@ class NoteViewModel() : ViewModel()
         }
     }
 
+    fun setActionMode(isActionMode: Boolean)
+    {
+        isActionModeEnabled.value = isActionMode
+    }
+
+    fun setSelectedNotes(notes: HashSet<NoteEntity>)
+    {
+        selectedNotes.value = notes
+    }
+
+    fun getActionModeState(): MutableLiveData<Boolean> = isActionModeEnabled
+    fun getSelectedNotes(): MutableLiveData<HashSet<NoteEntity>> = selectedNotes
 }

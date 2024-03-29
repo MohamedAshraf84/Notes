@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import androidx.navigation.findNavController
@@ -17,36 +16,31 @@ import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
 import com.mohamedashraf.notes.databinding.ItemNoteListBinding
 
-class NotesRecyclerAdapter(private val context:Context, private var notesList:ArrayList<NoteEntity> = ArrayList<NoteEntity>())
+class NotesRecyclerAdapter(private val context:Context, private var notes:ArrayList<NoteEntity> = ArrayList<NoteEntity>())
     : RecyclerView.Adapter<NotesRecyclerAdapter.NoteViewHolder>(){
-    private val TAG : String = "Adapter"
-    private lateinit var itemNoteBinding : ItemNoteListBinding
-    private lateinit var deleteClickedListener : OnItemDeleteClickedListener
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
 
-        Log.d(TAG, "onCreateViewHolder: ")
+    private val TAG : String = "Adapter"
+
+    var isMultiSelectEnabled : Boolean = false
+    private lateinit var itemNoteBinding : ItemNoteListBinding
+    private var notesAdapterInteractionListener: NotesAdapterInteractionListener? = null
+    private var selectedNotes: HashSet<NoteEntity> = HashSet<NoteEntity>()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         return NoteViewHolder(LayoutInflater.from(context).inflate(R.layout.item_note_list, parent, false))
     }
 
     override fun onBindViewHolder(noteViewHolder: NoteViewHolder, position: Int) {
-
-        Log.d(TAG, "onBindViewHolder, pos = ${position}")
-        val note: NoteEntity = notesList[position]
+        val note: NoteEntity = notes[position]
         noteViewHolder.bind(position, note)
         noteViewHolder.setListeners()
-
-        noteViewHolder.itemView.findViewById<CardView>(R.id.note_view).setOnClickListener()
-        {
-            val action = NotesFragmentDirections.actionNotesListToEditNote(note)
-            noteViewHolder.itemView.findNavController().navigate(action)
-        }
     }
 
-    override fun getItemCount(): Int = notesList.size
+
+    override fun getItemCount(): Int = notes.size
 
     fun setList(notes: ArrayList<NoteEntity>)
     {
-        notesList = notes
+        this.notes = notes
         notifyDataSetChanged()
     }
 
@@ -62,7 +56,10 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
 
         private val txtNoteCreationDate = itemView.findViewById<TextView>(R.id.txt_note_creation_date)
         private val txtNoteCreationTime = itemView.findViewById<TextView>(R.id.txt_note_creation_time)
-        //private val ivDelete = itemView.findViewById<ImageView>(R.id.iv_delete)
+
+        private val ivSelected = itemView.findViewById<ImageView>(R.id.iv_selected)
+        private val ivPinned = itemView.findViewById<ImageView>(R.id.iv_pinned)
+
         private val noteView = itemView.findViewById<CardView>(R.id.note_view)
 
         fun bind(position: Int, note: NoteEntity)
@@ -70,48 +67,101 @@ class NotesRecyclerAdapter(private val context:Context, private var notesList:Ar
             currentPosition = position
             currentNote = note
 
-            txtNoteTitle.text = note.noteTitle
-            txtNoteBody.text = note.noteBody
+            with(currentNote) {
+                txtNoteTitle.text = noteTitle
+                txtNoteBody.text = noteBody
 
-            txtNoteLink.text = note.noteAttachedLink
-            ivNoteImage.setImageURI(note.noteImagePath.toUri())
+                txtNoteLink.apply {
+                    text = noteAttachedLink
+                    visibility = if (noteAttachedLink.isEmpty()) View.GONE else View.VISIBLE
+                }
 
-            txtNoteCreationDate.text = note.creationDate
-            txtNoteCreationTime.text = note.creationTime
+                ivNoteImage.apply {
+                    visibility = if (noteImagePath.isEmpty()) View.GONE else View.VISIBLE
+                    setImageURI(noteImagePath.toUri())
+                }
+
+                txtNoteCreationDate.text = creationDate
+                txtNoteCreationTime.text = creationTime
+
+                ivSelected.visibility = if (isSelected) View.VISIBLE else View.GONE
+                ivPinned.visibility = if (isPinned) View.VISIBLE else View.GONE
+            }
         }
 
         fun setListeners() {
-            //ivDelete.setOnClickListener(this@NoteViewHolder)
-            //noteView.setOnClickListener(this@NoteViewHolder)
+            noteView.setOnLongClickListener()
+            {
+                notesAdapterInteractionListener?.onItemLongClicked()
+                isMultiSelectEnabled = true
+                currentNote.isSelected = true
+                noteView.findViewById<ImageView>(R.id.iv_selected).visibility = View.VISIBLE
+                if (!selectedNotes.contains(currentNote)) {
+                    selectedNotes.add(currentNote)
+                    notesAdapterInteractionListener?.onSelectedNotesChanged(selectedNotes)
+                }
+                true
+            }
+            noteView.setOnClickListener(this@NoteViewHolder)
         }
 
         override fun onClick(view: View?) {
             when(view?.id)
             {
-                /*R.id.iv_delete -> {
-                    Toast.makeText(context, "Delete Clicked: ${currentPosition}", Toast.LENGTH_LONG).show()
-                    deleteNote(currentPosition)
-                    deleteClickedListener.let {
-                        deleteClickedListener.onClick(currentNote.noteId)
+                R.id.note_view -> {
+                    if (!isMultiSelectEnabled)
+                    {
+                        val action = NotesFragmentDirections.actionNotesListToEditNote(currentNote)
+                        noteView.findNavController().navigate(action)
                     }
-                }*/
+                    else
+                    {
+                        if (!currentNote.isSelected) {
+                            noteView?.apply {
+                                ivSelected.visibility = View.VISIBLE
+                                selectedNotes.add(currentNote)
+                                notesAdapterInteractionListener?.onSelectedNotesChanged(selectedNotes)
+                            }
+                        }
+                        else
+                        {
+                            noteView?.apply {
+                                ivSelected.visibility = View.GONE
+                            }
+                            selectedNotes.remove(currentNote)
+                            notesAdapterInteractionListener?.onSelectedNotesChanged(selectedNotes)
+                        }
+
+                        currentNote.isSelected = !currentNote.isSelected
+                    }
+                }
             }
         }
     }
 
+    fun setMultiSelection(onOrOff: Boolean)
+    {
+        isMultiSelectEnabled = onOrOff
+    }
     fun deleteNote(position: Int)
     {
-        notesList.removeAt(position)
+        notes.removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, notesList.size)
-    }
-    fun setOnItemDeleteClickedListener(listener: OnItemDeleteClickedListener)
-    {
-        deleteClickedListener = listener
-    }
-    interface OnItemDeleteClickedListener
-    {
-        fun onClick(noteId: Long)
+        notifyItemRangeChanged(position, notes.size)
     }
 
+    fun addNotesAdapterInteractionListener(listener: NotesAdapterInteractionListener)
+    {
+        notesAdapterInteractionListener = listener
+    }
+
+    fun clearSelectedNotes()
+    {
+        selectedNotes.clear()
+    }
+    interface NotesAdapterInteractionListener
+    {
+        fun onItemLongClicked()
+        fun onSelectedNotesChanged(selectedNotes: HashSet<NoteEntity>)
+    }
 }

@@ -1,17 +1,20 @@
 package com.mohamedashraf.notes.ui.fragments.noteslist
 
 import android.os.Bundle
+import android.util.Log
+import android.view.ActionMode
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.size
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.mohamedashraf.notes.NoteRepository
 import com.mohamedashraf.notes.NoteViewModel
 import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
@@ -19,6 +22,7 @@ import com.mohamedashraf.notes.databinding.FragmentNotesListBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.log
 
 class NotesFragment : Fragment() {
 
@@ -34,7 +38,6 @@ class NotesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,12 +46,17 @@ class NotesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         notesRecyclerView = binding.notesRV
-        notesViewModel = ViewModelProvider(this) [NoteViewModel::class.java]
-
+        notesViewModel = ViewModelProvider(requireActivity()) [NoteViewModel::class.java]
         setupRecyclerView()
-        notesAdapter.setOnItemDeleteClickedListener(object : NotesRecyclerAdapter.OnItemDeleteClickedListener{
-            override fun onClick(noteId: Long) {
-                notesViewModel.deleteNoteById(noteId)
+
+        notesAdapter.addNotesAdapterInteractionListener(object : NotesRecyclerAdapter.NotesAdapterInteractionListener
+        {
+            override fun onItemLongClicked() {
+                notesViewModel.setActionMode(true)
+            }
+
+            override fun onSelectedNotesChanged(selectedNotes: HashSet<NoteEntity>) {
+                notesViewModel.setSelectedNotes(selectedNotes)
             }
         })
 
@@ -60,6 +68,14 @@ class NotesFragment : Fragment() {
         notesViewModel.searchResults.observe(viewLifecycleOwner)
         {
             notesAdapter.setList(it as ArrayList<NoteEntity>)
+        }
+
+        notesViewModel.getActionModeState().observe(viewLifecycleOwner) { isActionModeOn ->
+            if (!isActionModeOn) {
+                notesAdapter.isMultiSelectEnabled = false
+                notesAdapter.clearSelectedNotes()
+                resetNotesUIState()
+            }
         }
 
         binding.btnAddNote.setOnClickListener {
@@ -79,7 +95,6 @@ class NotesFragment : Fragment() {
                 }
                 return false
             }
-
         })
     }
 
@@ -91,6 +106,15 @@ class NotesFragment : Fragment() {
         notesRecyclerView.adapter = notesAdapter
     }
 
+    private fun resetNotesUIState()
+    {
+        val size:Int = notesRecyclerView.adapter?.itemCount?: -1
+        for (i in 0 until size) {
+            notesRecyclerView.findViewHolderForAdapterPosition(i)?.itemView?.apply {
+                isSelected = false
+            }
+        }
+    }
 
     private fun setSampleData() : ArrayList<NoteEntity>
     {

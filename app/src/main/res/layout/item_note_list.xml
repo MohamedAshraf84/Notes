@@ -9,44 +9,105 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/_4dp"
     app:cardCornerRadius="@dimen/_24sp"
-    app:contentPadding="@dimen/_8dp">
+    app:contentPadding="@dimen/_4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/_4dp">
 
+        <ImageView
+            android:id="@+id/iv_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_1dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_selected"
+            tools:visibility="visible" />
+
 
         <TextView
             android:id="@+id/txt_note_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/combo_regular"
-            tools:text="Note Title"
+            android:layout_marginTop="@dimen/_4dp"
+            android:layout_marginEnd="@dimen/_4dp"
             android:textSize="@dimen/_18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/iv_note_image"
+            app:layout_constraintEnd_toStartOf="@+id/iv_pinned"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_selected"
+            tools:text="Note Title" />
+
+        <ImageView
+            android:id="@+id/iv_pinned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_note_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txt_note_title"
+            app:srcCompat="@drawable/ic_pin"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_note_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_2dp"
+            android:layout_marginTop="@dimen/_4dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_note_title"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/tv_note_link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4dp"
+            android:layout_marginEnd="@dimen/_4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/_14sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_note_image"
+            tools:text="Link"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/txt_note_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4dp"
-            android:layout_marginTop="@dimen/_2dp"
-            android:layout_marginBottom="@dimen/_2dp"
+            android:layout_marginTop="@dimen/_4dp"
+            android:layout_marginEnd="@dimen/_16dp"
             android:ellipsize="end"
-            android:fontFamily="casual"
             android:gravity="center_vertical"
             android:maxLines="2"
-            tools:text="Note Details"
             android:textSize="@dimen/_16sp"
-            app:layout_constraintBottom_toTopOf="@+id/iv_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_note_link" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_note_link"
+            tools:text="Note Details" />
+
+        <View
+            android:id="@+id/vertical_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1dp"
+            android:layout_marginTop="@dimen/_4dp"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toBottomOf="@id/txt_note_details" />
 
         <ImageView
             android:id="@+id/iv_date"
@@ -57,34 +118,9 @@
             app:layout_constraintEnd_toStartOf="@+id/txt_note_creation_date"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_note_details"
+            app:layout_constraintTop_toBottomOf="@+id/vertical_bar"
             app:layout_constraintVertical_bias="0.5"
             app:srcCompat="@drawable/ic_date" />
-
-        <ImageView
-            android:id="@+id/iv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_4dp"
-            android:layout_marginEnd="@dimen/_4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_note_creation_date"
-            app:layout_constraintEnd_toStartOf="@+id/txt_note_creation_time"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/txt_note_creation_date"
-            app:layout_constraintTop_toTopOf="@+id/txt_note_creation_date"
-            app:srcCompat="@drawable/ic_time" />
-
-        <TextView
-            android:id="@+id/txt_note_creation_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            tools:text="Creation Time"
-            android:textSize="@dimen/_12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/iv_time"
-            app:layout_constraintTop_toTopOf="@+id/iv_time" />
 
         <TextView
             android:id="@+id/txt_note_creation_date"
@@ -101,34 +137,30 @@
             app:layout_constraintTop_toTopOf="@+id/iv_date" />
 
         <ImageView
-            android:id="@+id/iv_note_image"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_2dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toTopOf="@+id/tv_note_link"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_note_title"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <TextView
-            android:id="@+id/tv_note_link"
-            android:layout_width="0dp"
+            android:id="@+id/iv_time"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4dp"
-            android:layout_marginEnd="@dimen/_32dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/blue"
-            android:textSize="@dimen/_14sp"
-            app:layout_constraintBottom_toTopOf="@+id/txt_note_details"
+            android:layout_marginEnd="@dimen/_4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_note_creation_date"
+            app:layout_constraintEnd_toStartOf="@+id/txt_note_creation_time"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/txt_note_creation_date"
+            app:layout_constraintTop_toTopOf="@+id/txt_note_creation_date"
+            app:srcCompat="@drawable/ic_time" />
+
+
+        <TextView
+            android:id="@+id/txt_note_creation_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Creation Time"
+            android:textSize="@dimen/_12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_time"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_note_image"
-            tools:text="Link" />
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/iv_time"
+            app:layout_constraintTop_toTopOf="@+id/iv_time" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

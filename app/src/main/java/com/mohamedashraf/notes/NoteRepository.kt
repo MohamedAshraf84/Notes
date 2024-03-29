@@ -22,6 +22,17 @@ class NoteRepository(private val notesDao : NotesDatabaseDao) {
         notesDao.deleteNoteById(noteId)
     }
 
+    suspend fun pinNoteById(noteId: Long)
+    {
+        val note = notesDao.getNoteById(noteId)
+        note?.apply {
+            isPinned = true
+        }
+        note?.let {
+            notesDao.update(note)
+        }
+    }
+
     suspend fun updateNote(noteToUpdate : NoteEntity)
     {
         notesDao.update(noteToUpdate)
