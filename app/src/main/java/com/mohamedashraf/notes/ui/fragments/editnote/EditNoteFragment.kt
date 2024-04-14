@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
@@ -24,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
@@ -34,6 +36,7 @@ import com.mohamedashraf.notes.database.NoteEntity
 import com.mohamedashraf.notes.databinding.AddImageDialogBinding
 import com.mohamedashraf.notes.databinding.AddLinkDialogBinding
 import com.mohamedashraf.notes.databinding.FragmentEditNoteBinding
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -56,6 +59,11 @@ class EditNoteFragment : Fragment() {
     private lateinit var requestGalleryPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
 
+    private lateinit var requestCameraPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var takeImageLauncher: ActivityResultLauncher<Intent>
+
+    private var photoFile: File? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,6 +77,7 @@ class EditNoteFragment : Fragment() {
         super.onAttach(context)
         registerPermissions()
         registerForGalleryResult()
+        registerForCameraResult()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,12 +105,9 @@ class EditNoteFragment : Fragment() {
             binding.edNoteTitle.editText?.setText(it.noteTitle)
             binding.edNoteDetails.editText?.setText(it.noteBody)
 
-            binding.ivNoteImage.visibility = View.VISIBLE
-            binding.ivNoteImage.setImageURI(it.noteImagePath.toUri())
-            binding.ivNoteImage.tag = it.noteImagePath.toUri()
+            populateNoteImage(it.noteImagePath.toUri())
 
-            binding.tvNoteAttachedLink.visibility = View.VISIBLE
-            binding.tvNoteAttachedLink.text = it.noteAttachedLink
+            displayAttachedLink(it.noteAttachedLink)
 
             binding.tvDate.text = it.creationDate
             binding.tvTime.text = it.creationTime
@@ -159,6 +165,12 @@ class EditNoteFragment : Fragment() {
             addImageDialog.dismiss()
         }
 
+        addImageDialogBinding.btnCamera.setOnClickListener()
+        {
+            checkCameraPermission()
+            addImageDialog.dismiss()
+        }
+
         addImageDialogBinding.btnCancel.setOnClickListener()
         {
             addImageDialog.dismiss()
@@ -166,15 +178,7 @@ class EditNoteFragment : Fragment() {
 
 
         addLinkDialogBinding.btnOk.setOnClickListener {
-            val linkText = addLinkDialogBinding.etLink.text.toString()
-            val underlinedText = SpannableString(linkText).apply {
-                setSpan(UnderlineSpan(), 0, length, 0)
-            }
-
-            binding.tvNoteAttachedLink.apply {
-                text = underlinedText
-                visibility = View.VISIBLE
-            }
+            displayAttachedLink( addLinkDialogBinding.etLink.text.toString())
             addLinkDialog.dismiss()
         }
 
@@ -229,12 +233,33 @@ class EditNoteFragment : Fragment() {
 
     }
 
+    private fun displayAttachedLink(linkText: String)
+    {
+        if (linkText.isNotBlank())
+        {
+            val underlinedText = SpannableString(linkText)
+            underlinedText.setSpan(UnderlineSpan(), 0, linkText.length, 0)
+
+            binding.tvNoteAttachedLink.apply {
+                text = underlinedText
+                visibility = View.VISIBLE
+            }
+        }
+    }
     private fun registerPermissions() {
         requestGalleryPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
                 pickImage()
+            }
+        }
+
+        requestCameraPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                takePhoto()
             }
         }
     }
@@ -253,15 +278,62 @@ class EditNoteFragment : Fragment() {
                         requireActivity().contentResolver.takePersistableUriPermission(selectedImageUri, takeFlags)
                     }
 
-                    binding.ivNoteImage.apply {
-                        visibility = View.VISIBLE
-                        tag = selectedImageUri
-                        setImageURI(selectedImageUri)
+                    populateNoteImage(selectedImageUri)
+                }
+            }
+    }
+
+    private fun registerForCameraResult() {
+        takeImageLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
+                if (it.resultCode == Activity.RESULT_OK) {
+                    photoFile?.let { file ->
+                        val imageUri: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            "com.mohamedashraf.notes.fileProvider",
+                            file
+                        )
+                        populateNoteImage(imageUri)
                     }
                 }
             }
     }
 
+    private fun populateNoteImage(imageUri: Uri?)
+    {
+        if (imageUri?.path?.isNotBlank() == true)
+        {
+            binding.ivNoteImage.apply {
+                visibility = View.VISIBLE
+                tag = imageUri
+                setImageURI(imageUri)
+            }
+        }
+    }
+
+    private fun checkCameraPermission() {
+        val cameraPermission = Manifest.permission.CAMERA
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                cameraPermission
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                takePhoto()
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                cameraPermission
+            ) -> {
+                requestCameraPermissionLauncher.launch(cameraPermission)
+            }
+
+            else -> {
+                requestCameraPermissionLauncher.launch(cameraPermission)
+            }
+        }
+    }
 
     private fun checkGalleryPermission() {
         val galleryPermission = Manifest.permission.READ_EXTERNAL_STORAGE
@@ -290,6 +362,32 @@ class EditNoteFragment : Fragment() {
     {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageLauncher.launch(intent)
+    }
+
+    private fun takePhoto()
+    {
+        photoFile = createImageFile()
+        photoFile?.let { file ->
+            val photoUri: Uri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.mohamedashraf.notes.fileProvider",
+                file
+            )
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+            takeImageLauncher.launch(intent)
+        }
+    }
+
+    private fun createImageFile(): File? {
+
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
+        )
     }
 
     private fun updateCharsCnt()
