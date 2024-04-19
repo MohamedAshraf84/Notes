@@ -7,6 +7,7 @@
     <string name="Tasks_fragment_label">Tasks</string>
 
     <string name="edit_note_label">Edit Note</string>
+    <string name="add_note_label">Add Note</string>
     <string name="note_title_hint">Title</string>
     <string name="note_details_hint">Start typing</string>
     <string name="characters">Characters</string>
@@ -17,4 +18,16 @@
     <string name="attach_link">Attach Link</string>
     <string name="delete">Delete</string>
     <string name="pin">Pin</string>
+
+    <string name="sort">Sort</string>
+    <string name="change_layout">Change Layout</string>
+
+    <string name="sort_by_title">Sort By Title</string>
+    <string name="sort_by_modification_date">Modification Date</string>
+    <string name="sort_by_modification_time">Modification Time</string>
+
+    <string name="one_per_row">Singular Note View</string>
+    <string name="two_per_row">Paired Note View</string>
+
+
 </resources>

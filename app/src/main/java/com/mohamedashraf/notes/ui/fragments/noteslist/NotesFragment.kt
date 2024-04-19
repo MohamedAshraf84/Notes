@@ -1,16 +1,14 @@
 package com.mohamedashraf.notes.ui.fragments.noteslist
 
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.ActionMode
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.PopupMenu
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.size
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -19,12 +17,14 @@ import com.mohamedashraf.notes.NoteViewModel
 import com.mohamedashraf.notes.R
 import com.mohamedashraf.notes.database.NoteEntity
 import com.mohamedashraf.notes.databinding.FragmentNotesListBinding
+import com.mohamedashraf.notes.ui.fragments.FragmentToolbar
+import com.mohamedashraf.notes.ui.fragments.ToolbarFragment
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.log
 
-class NotesFragment : Fragment() {
+
+class NotesFragment : ToolbarFragment() {
 
     private var _binding: FragmentNotesListBinding? = null
     private lateinit var notesRecyclerView: RecyclerView
@@ -98,6 +98,39 @@ class NotesFragment : Fragment() {
         })
     }
 
+    override fun buildFragmentToolbar(): FragmentToolbar {
+        val menuItems = arrayListOf(R.id.action_sort, R.id.action_layout)
+        val menuItemsClickListeners =
+            arrayListOf<MenuItem.OnMenuItemClickListener?>(
+                MenuItem.OnMenuItemClickListener {
+                    showPopUpMenu(R.menu.menu_sorting, requireActivity().findViewById(R.id.action_sort))
+                    true
+                },
+                MenuItem.OnMenuItemClickListener {
+                    showPopUpMenu(R.menu.menu_notes_layout, requireActivity().findViewById(R.id.action_layout))
+                    true
+                }
+            )
+
+        return FragmentToolbar.Builder()
+            .withId(binding.notesFragmentToolbar.toolbar.id)
+            .withTitle(R.string.notes_fragment_label)
+            .withMenu(R.menu.menu_notes_fragment)
+            .withMenuItems(menuItems, menuItemsClickListeners)
+            .build();
+    }
+
+    private fun showPopUpMenu(menuId: Int, view: View)
+    {
+        val popMenu = PopupMenu(context, view)
+        popMenu.menuInflater.inflate(menuId, popMenu.menu)
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
+            popMenu.setForceShowIcon(true)
+
+        popMenu.show()
+    }
+
     private fun setupRecyclerView()
     {
         layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
@@ -118,7 +151,6 @@ class NotesFragment : Fragment() {
 
     private fun setSampleData() : ArrayList<NoteEntity>
     {
-
         val date = getCurrentDate()
         val time = getCurrentTime()
         return arrayListOf(

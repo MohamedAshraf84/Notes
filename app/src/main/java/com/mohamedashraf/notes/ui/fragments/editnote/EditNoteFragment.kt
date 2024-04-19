@@ -16,7 +16,6 @@ import android.provider.MediaStore
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,13 +35,15 @@ import com.mohamedashraf.notes.database.NoteEntity
 import com.mohamedashraf.notes.databinding.AddImageDialogBinding
 import com.mohamedashraf.notes.databinding.AddLinkDialogBinding
 import com.mohamedashraf.notes.databinding.FragmentEditNoteBinding
+import com.mohamedashraf.notes.ui.fragments.ToolbarFragment
+import com.mohamedashraf.notes.ui.fragments.FragmentToolbar
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 
-class EditNoteFragment : Fragment() {
+class EditNoteFragment : ToolbarFragment() {
 
     private val args by navArgs<EditNoteFragmentArgs>()
     private lateinit var editNoteViewModel: EditNoteViewModel
@@ -231,6 +232,16 @@ class EditNoteFragment : Fragment() {
             findNavController().navigate(R.id.action_EditNoteFragment_to_NotesFragment)
         }
 
+    }
+
+    override fun buildFragmentToolbar(): FragmentToolbar {
+
+        val labelResId = if (args.note == null) R.string.add_note_label else R.string.edit_note_label
+
+        return FragmentToolbar.Builder()
+            .withId(binding.editFragmentToolbar.toolbar.id)
+            .withTitle(labelResId)
+            .build()
     }
 
     private fun displayAttachedLink(linkText: String)

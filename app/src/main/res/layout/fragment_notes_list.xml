@@ -6,14 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.noteslist.NotesFragment">
 
+    <include
+        android:id="@+id/notes_fragment_toolbar"
+        layout="@layout/layout_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/_8dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="@dimen/_8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notes_fragment_toolbar"
         android:focusable="false"
+        app:layout_behavior="com.google.android.material.search.SearchView$Behavior"
         app:iconifiedByDefault="false"
         app:queryHint="Search notes" />
 
@@ -21,10 +32,11 @@
         android:id="@+id/notesRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="55dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginTop="125dp"
+        android:layout_marginStart="@dimen/_4dp"
+        android:layout_marginEnd="@dimen/_4dp"
+        app:layout_anchor="@id/searchView_notes"
+        android:layout_marginBottom="@dimen/_4dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_note_list" />
 
@@ -34,7 +46,6 @@
         android:layout_height="wrap_content"
         app:layout_anchorGravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:background="@drawable/edit_text_bg"
         android:contentDescription="TODO"
         android:src="@drawable/ic_add_note"
         app:shapeAppearance="@style/FloatingAddNoteButtonAppearance"
