@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/layout_singular"
+        android:icon="@drawable/ic_layout_singular"
+        android:title="@string/one_per_row"
+        app:showAsAction="ifRoom|withText"
+        />
+
+    <item
+        android:id="@+id/layout_double"
+        android:icon="@drawable/ic_layout_double"
+        android:title="@string/two_per_row"
+        app:showAsAction="ifRoom|withText"
+        />
+</menu>
