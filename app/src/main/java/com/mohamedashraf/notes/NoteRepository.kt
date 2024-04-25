@@ -54,4 +54,8 @@ class NoteRepository(private val notesDao : NotesDatabaseDao) {
         return notesDao.sortNotesByCreationDate()
     }
 
+    suspend fun sortNotesByModificationDate() : List<NoteEntity>
+    {
+        return notesDao.sortNotesByModificationDate()
+    }
 }

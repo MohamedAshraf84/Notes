@@ -147,6 +147,12 @@ class NotesFragment : ToolbarFragment() {
                     notesViewModel.sortNotesByCreationDate()
                     true
                 }
+
+                R.id.sort_by_modification_date ->
+                {
+                    notesViewModel.sortNotesByModificationDate()
+                    true
+                }
                 else ->
                 {
                     false
@@ -175,7 +181,7 @@ class NotesFragment : ToolbarFragment() {
         }
     }
 
-    private fun setSampleData() : ArrayList<NoteEntity>
+    /*private fun setSampleData() : ArrayList<NoteEntity>
     {
         val date = getCurrentDate()
         val time = getCurrentTime()
@@ -192,7 +198,7 @@ class NotesFragment : ToolbarFragment() {
             NoteEntity(noteTitle = "Comparing two string literals", noteBody =  "Mavericks to nicks teams busy man women", creationDate = date, creationTime = time),
             NoteEntity(noteTitle = "Hello idiots counter poops", noteBody =  "Deleting items to my house by early cats", creationDate = date, creationTime = time),
         )
-    }
+    }*/
 
     private fun getCurrentDate() : String
     {

@@ -35,6 +35,12 @@ data class NoteEntity (
     @ColumnInfo(name = "creation_time")
     val creationTime: String,
 
+    @ColumnInfo(name = "modification_date")
+    var modificationDate: String,
+
+    @ColumnInfo(name = "modification_time")
+    var modificationTime: String,
+
     @ColumnInfo(name = "is_pinned")
     var isPinned: Boolean = false,
 

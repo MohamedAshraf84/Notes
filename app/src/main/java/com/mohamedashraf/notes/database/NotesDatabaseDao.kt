@@ -38,4 +38,6 @@ interface NotesDatabaseDao {
     @Query("SELECT * FROM note_entity ORDER BY creation_date DESC, creation_time DESC")
     suspend fun sortNotesByCreationDate(): List<NoteEntity>
 
+    @Query("SELECT * FROM note_entity ORDER BY modification_date DESC, modification_time DESC")
+    suspend fun sortNotesByModificationDate(): List<NoteEntity>
 }

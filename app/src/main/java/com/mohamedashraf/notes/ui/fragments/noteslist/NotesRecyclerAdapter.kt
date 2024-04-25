@@ -1,7 +1,6 @@
 package com.mohamedashraf.notes.ui.fragments.noteslist
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,8 +53,8 @@ class NotesRecyclerAdapter(private val context:Context, private var notes:ArrayL
         private val txtNoteLink = itemView.findViewById<TextView>(R.id.tv_note_link)
         private val ivNoteImage = itemView.findViewById<ImageView>(R.id.iv_note_image)
 
-        private val txtNoteCreationDate = itemView.findViewById<TextView>(R.id.txt_note_creation_date)
-        private val txtNoteCreationTime = itemView.findViewById<TextView>(R.id.txt_note_creation_time)
+        private val txtNoteModificationDate = itemView.findViewById<TextView>(R.id.txt_note_modification_date)
+        private val txtNoteModificationTime = itemView.findViewById<TextView>(R.id.txt_note_modification_time)
 
         private val ivSelected = itemView.findViewById<ImageView>(R.id.iv_selected)
         private val ivPinned = itemView.findViewById<ImageView>(R.id.iv_pinned)
@@ -81,8 +80,8 @@ class NotesRecyclerAdapter(private val context:Context, private var notes:ArrayL
                     setImageURI(noteImagePath.toUri())
                 }
 
-                txtNoteCreationDate.text = creationDate
-                txtNoteCreationTime.text = creationTime
+                txtNoteModificationDate.text = modificationDate
+                txtNoteModificationTime.text = modificationTime
 
                 ivSelected.visibility = if (isSelected) View.VISIBLE else View.GONE
                 ivPinned.visibility = if (isPinned) View.VISIBLE else View.GONE

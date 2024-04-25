@@ -105,13 +105,12 @@ class EditNoteFragment : ToolbarFragment() {
         args.note?.let { //existing note
             binding.edNoteTitle.editText?.setText(it.noteTitle)
             binding.edNoteDetails.editText?.setText(it.noteBody)
-
             populateNoteImage(it.noteImagePath.toUri())
-
             displayAttachedLink(it.noteAttachedLink)
-
-            binding.tvDate.text = it.creationDate
-            binding.tvTime.text = it.creationTime
+            /*binding.tvDate.text = it.creationDate
+            binding.tvTime.text = it.creationTime*/
+            binding.tvDate.text = it.modificationDate
+            binding.tvTime.text = it.modificationTime
             updateCharsCnt()
 
         } ?: run {//new note
@@ -219,12 +218,21 @@ class EditNoteFragment : ToolbarFragment() {
                 noteAttachedLink = binding.tvNoteAttachedLink.text.toString(),
                 creationDate = binding.tvDate.text.toString(),
                 creationTime = binding.tvTime.text.toString(),
+                modificationDate = binding.tvDate.text.toString(),
+                modificationTime = binding.tvTime.text.toString(),
             )
 
             args.note?.let {
-                note.noteId = args.note?.noteId!!
-                note.isPinned = args.note?.isPinned!!
-                noteViewModel.updateNote(note)
+                note.noteId = it.noteId
+                note.isPinned = it.isPinned
+
+                if (note != it)
+                {
+                    note.modificationDate = getCurrentDate()
+                    note.modificationTime = getCurrentTime()
+                    noteViewModel.updateNote(note)
+                }
+
             } ?: run {
                 noteViewModel.addNoteToDataBase(note)
             }

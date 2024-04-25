@@ -78,6 +78,16 @@ class NoteViewModel() : ViewModel()
         }
     }
 
+    fun sortNotesByModificationDate()
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            val notes = noteRepository.sortNotesByModificationDate()
+            withContext(Dispatchers.Main) {
+                sortedNotes.value = notes
+            }
+        }
+    }
+
     fun deleteNoteById(noteId: Long)
     {
         viewModelScope.launch(Dispatchers.IO) {
