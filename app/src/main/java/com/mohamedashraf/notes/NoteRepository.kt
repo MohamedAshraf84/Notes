@@ -42,4 +42,16 @@ class NoteRepository(private val notesDao : NotesDatabaseDao) {
     {
         return notesDao.searchNotes(searchKey)
     }
+
+
+    suspend fun sortNotesByTitle() : List<NoteEntity>
+    {
+        return notesDao.sortNotesByTitle()
+    }
+
+    suspend fun sortNotesByCreationDate() : List<NoteEntity>
+    {
+        return notesDao.sortNotesByCreationDate()
+    }
+
 }

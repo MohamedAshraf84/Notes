@@ -70,6 +70,11 @@ class NotesFragment : ToolbarFragment() {
             notesAdapter.setList(it as ArrayList<NoteEntity>)
         }
 
+        notesViewModel.sortedNotes.observe(viewLifecycleOwner)
+        {
+            notesAdapter.setList(it as ArrayList<NoteEntity>)
+        }
+
         notesViewModel.getActionModeState().observe(viewLifecycleOwner) { isActionModeOn ->
             if (!isActionModeOn) {
                 notesAdapter.isMultiSelectEnabled = false
@@ -103,11 +108,11 @@ class NotesFragment : ToolbarFragment() {
         val menuItemsClickListeners =
             arrayListOf<MenuItem.OnMenuItemClickListener?>(
                 MenuItem.OnMenuItemClickListener {
-                    showPopUpMenu(R.menu.menu_sorting, requireActivity().findViewById(R.id.action_sort))
+                    showSortPopUpMenu()
                     true
                 },
                 MenuItem.OnMenuItemClickListener {
-                    showPopUpMenu(R.menu.menu_notes_layout, requireActivity().findViewById(R.id.action_layout))
+
                     true
                 }
             )
@@ -120,13 +125,34 @@ class NotesFragment : ToolbarFragment() {
             .build();
     }
 
-    private fun showPopUpMenu(menuId: Int, view: View)
+    private fun showSortPopUpMenu()
     {
-        val popMenu = PopupMenu(context, view)
-        popMenu.menuInflater.inflate(menuId, popMenu.menu)
+        val popMenu = PopupMenu(context, requireActivity().findViewById(R.id.action_sort))
+        popMenu.menuInflater.inflate(R.menu.menu_sorting, popMenu.menu)
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
             popMenu.setForceShowIcon(true)
+
+        popMenu.setOnMenuItemClickListener { menuItem ->
+            when(menuItem.itemId)
+            {
+                R.id.sort_by_title ->
+                {
+                    notesViewModel.sortNotesByTitle()
+                    true
+                }
+
+                R.id.sort_by_creation_date ->
+                {
+                    notesViewModel.sortNotesByCreationDate()
+                    true
+                }
+                else ->
+                {
+                    false
+                }
+            }
+        }
 
         popMenu.show()
     }

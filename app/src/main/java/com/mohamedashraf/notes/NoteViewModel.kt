@@ -21,6 +21,11 @@ class NoteViewModel() : ViewModel()
     val searchResults: MutableLiveData<List<NoteEntity>> by lazy {
         MutableLiveData<List<NoteEntity>>()
     }
+
+    val sortedNotes: MutableLiveData<List<NoteEntity>> by lazy {
+        MutableLiveData<List<NoteEntity>>()
+    }
+
     private var isActionModeEnabled = MutableLiveData<Boolean>(false)
     private var selectedNotes = MutableLiveData<HashSet<NoteEntity>>()
     init {
@@ -49,6 +54,26 @@ class NoteViewModel() : ViewModel()
             val notes = noteRepository.searchNotes(searchKey)
             withContext(Dispatchers.Main) {
                 searchResults.value = notes
+            }
+        }
+    }
+
+    fun sortNotesByTitle()
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            val notes = noteRepository.sortNotesByTitle()
+            withContext(Dispatchers.Main) {
+                sortedNotes.value = notes
+            }
+        }
+    }
+
+    fun sortNotesByCreationDate()
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            val notes = noteRepository.sortNotesByCreationDate()
+            withContext(Dispatchers.Main) {
+                sortedNotes.value = notes
             }
         }
     }

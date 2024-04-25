@@ -32,4 +32,10 @@ interface NotesDatabaseDao {
     @Query("SELECT * FROM note_entity WHERE note_title LIKE :searchKey")
     suspend fun searchNotes(searchKey: String): List<NoteEntity>
 
+    @Query("SELECT * FROM note_entity ORDER BY note_title, note_id ASC")
+    suspend fun sortNotesByTitle(): List<NoteEntity>
+
+    @Query("SELECT * FROM note_entity ORDER BY creation_date DESC, creation_time DESC")
+    suspend fun sortNotesByCreationDate(): List<NoteEntity>
+
 }
