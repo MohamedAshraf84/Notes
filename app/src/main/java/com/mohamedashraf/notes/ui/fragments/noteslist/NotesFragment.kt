@@ -111,10 +111,11 @@ class NotesFragment : ToolbarFragment() {
                     showSortPopUpMenu()
                     true
                 },
+
                 MenuItem.OnMenuItemClickListener {
 
                     true
-                }
+                },
             )
 
         return FragmentToolbar.Builder()
@@ -180,25 +181,6 @@ class NotesFragment : ToolbarFragment() {
             }
         }
     }
-
-    /*private fun setSampleData() : ArrayList<NoteEntity>
-    {
-        val date = getCurrentDate()
-        val time = getCurrentTime()
-        return arrayListOf(
-            NoteEntity(noteTitle = "How to bypass the evil mango", noteBody =  "Bleeding mango guice skill", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Note entity for room ", noteBody =  "Comparing two string literals fractions window", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Setting option for cat", noteBody =  "Adapting the adapter to dog", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Deleting items to my house", noteBody =  "How to compose the wild apple adapting the adapter", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Adapting the adapter to dog", noteBody =  "Adapting the adapter to dog to compose the wild apple", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Random early shitting", noteBody =  "Random early cats for comparing two string literals", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "How to compose the wild apple", noteBody =  "Deleting items to my house for cats to rain", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Bleeding mango guice skill", noteBody =  "Random early cats nicks teams busy", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Mavericks to nicks teams busy", noteBody =  "nicks teams busy counter poops", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Comparing two string literals", noteBody =  "Mavericks to nicks teams busy man women", creationDate = date, creationTime = time),
-            NoteEntity(noteTitle = "Hello idiots counter poops", noteBody =  "Deleting items to my house by early cats", creationDate = date, creationTime = time),
-        )
-    }*/
 
     private fun getCurrentDate() : String
     {

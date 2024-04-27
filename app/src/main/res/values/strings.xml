@@ -19,12 +19,14 @@
     <string name="delete">Delete</string>
     <string name="pin">Pin</string>
 
+
     <string name="sort">Sort By</string>
     <string name="change_layout">Change Layout</string>
 
-    <string name="sort_by_title">Note Title</string>
+    <string name="sort_by_title">Title</string>
     <string name="sort_by_creation_date">Creation Date</string>
     <string name="sort_by_modification_date">Modification Date</string>
+
 
     <string name="one_per_row">Singular Note View</string>
     <string name="two_per_row">Paired Note View</string>

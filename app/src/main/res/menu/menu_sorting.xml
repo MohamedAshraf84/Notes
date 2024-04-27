@@ -7,6 +7,7 @@
         android:title="@string/sort_by_title"
         app:showAsAction="ifRoom|withText"/>
 
+
     <item android:id="@+id/sort_by_creation_date"
         android:icon="@drawable/ic_date"
         android:title="@string/sort_by_creation_date"
